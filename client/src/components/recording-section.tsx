@@ -13,6 +13,7 @@ interface RecordingSectionProps {
 
 export const RecordingSection: React.FC<RecordingSectionProps> = ({ onShare }) => {
   const [isProcessing, setIsProcessing] = useState(false);
+  const [manualTranscript, setManualTranscript] = useState('');
   const { toast } = useToast();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const { addNote } = useNotes();
@@ -26,6 +27,9 @@ export const RecordingSection: React.FC<RecordingSectionProps> = ({ onShare }) =
     resetTranscript,
     error
   } = useSpeechRecognition({
+    onResult: (newTranscript) => {
+      setManualTranscript(newTranscript);
+    },
     onError: (error) => {
       toast({
         title: "Error",
@@ -59,6 +63,7 @@ export const RecordingSection: React.FC<RecordingSectionProps> = ({ onShare }) =
 
   const handleClearTranscription = () => {
     resetTranscript();
+    setManualTranscript('');
     toast({
       title: "Success",
       description: "Transcription cleared!",
@@ -66,17 +71,23 @@ export const RecordingSection: React.FC<RecordingSectionProps> = ({ onShare }) =
     });
   };
 
+  // Handle manual changes to the transcript
+  const handleTranscriptChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    setManualTranscript(e.target.value);
+  };
+
   const handleCopyTranscription = () => {
-    if (!transcript) {
+    const textToCopy = manualTranscript;
+    if (!textToCopy) {
       toast({
         title: "Nothing to copy",
-        description: "Please record something first!",
+        description: "Please record something or type in the text area first!",
         variant: "default",
       });
       return;
     }
 
-    navigator.clipboard.writeText(transcript)
+    navigator.clipboard.writeText(textToCopy)
       .then(() => {
         toast({
           title: "Copied!",
@@ -94,38 +105,49 @@ export const RecordingSection: React.FC<RecordingSectionProps> = ({ onShare }) =
   };
 
   const handleSaveNote = async () => {
-    if (!transcript.trim()) {
+    if (!manualTranscript.trim()) {
       toast({
         title: "Empty Note",
-        description: "Please record something first!",
+        description: "Please record something or type in the text area first!",
         variant: "default",
       });
       return;
     }
 
     // Generate title from first few words
-    const words = transcript.trim().split(' ');
+    const words = manualTranscript.trim().split(' ');
     const title = words.slice(0, 3).join(' ') + (words.length > 3 ? '...' : '');
 
     try {
-      await addNote(title, transcript);
+      await addNote(title, manualTranscript);
+      setManualTranscript('');
       resetTranscript();
+      toast({
+        title: "Note Saved",
+        description: "Your note has been saved successfully!",
+        variant: "success",
+      });
     } catch (error) {
       console.error("Error saving note:", error);
+      toast({
+        title: "Error",
+        description: "Failed to save note. Please try again.",
+        variant: "destructive",
+      });
     }
   };
 
   const handleShareNote = () => {
-    if (!transcript.trim()) {
+    if (!manualTranscript.trim()) {
       toast({
         title: "Empty Note",
-        description: "Please record something first!",
+        description: "Please record something or type in the text area first!",
         variant: "default",
       });
       return;
     }
     
-    onShare(transcript);
+    onShare(manualTranscript);
   };
 
   return (
@@ -195,11 +217,11 @@ export const RecordingSection: React.FC<RecordingSectionProps> = ({ onShare }) =
               <Textarea
                 id="transcription"
                 ref={textareaRef}
-                value={transcript}
-                onChange={(e) => {}}
+                value={manualTranscript}
+                onChange={handleTranscriptChange}
                 rows={5}
                 className="w-full resize-none focus:ring-primary focus:border-primary"
-                placeholder="Your transcribed text will appear here..."
+                placeholder="Your transcribed text will appear here or you can type directly..."
               />
               <Button
                 variant="ghost"

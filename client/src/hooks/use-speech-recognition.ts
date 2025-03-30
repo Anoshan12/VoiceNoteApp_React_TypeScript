@@ -30,6 +30,14 @@ interface SpeechRecognitionErrorEvent extends Event {
   message: string;
 }
 
+// Add these browser compatibility types
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
+
 export function useSpeechRecognition({
   onResult,
   onError,
