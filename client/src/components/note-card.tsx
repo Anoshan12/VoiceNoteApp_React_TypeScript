@@ -54,7 +54,7 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onShare }) => {
   };
 
   return (
-    <Card className="bg-white dark:bg-gray-800 hover:shadow-lg transition overflow-hidden border border-gray-100 dark:border-gray-700">
+    <Card className="card hover:shadow-lg transition overflow-hidden border border-gray-100 dark:border-gray-700 hover:border-blue-200 dark:hover:border-blue-900">
       <div className="p-5">
         <div className="flex justify-between items-start mb-2">
           <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 truncate flex-1">
@@ -72,16 +72,18 @@ export const NoteCard: React.FC<NoteCardProps> = ({ note, onShare }) => {
             </Button>
           </div>
         </div>
-        <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-2 mb-3">
+        <p className="text-gray-600 dark:text-gray-400 text-sm line-clamp-3 mb-3">
           {note.content}
         </p>
         <div className="flex justify-between items-center text-xs text-gray-500 dark:text-gray-500">
-          <span>{formattedDate}</span>
+          <span className="bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-300 px-2 py-1 rounded-full text-xs">
+            {formattedDate}
+          </span>
           <div className="flex items-center">
             <Button 
               variant="ghost" 
               size="sm" 
-              className="p-1 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 h-7 w-7" 
+              className="p-1 text-gray-400 hover:text-blue-600 dark:hover:text-blue-300 h-7 w-7" 
               onClick={handleCopy}
               title="Copy to clipboard"
             >

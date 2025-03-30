@@ -31,15 +31,15 @@ export const SavedNotesSection: React.FC<SavedNotesSectionProps> = ({ onShare })
   };
 
   return (
-    <div>
+    <div className="bg-white/50 dark:bg-gray-900/50 rounded-lg shadow-md p-6 backdrop-blur-sm">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-semibold">Saved Notes</h2>
+        <h2 className="text-2xl font-semibold bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Saved Notes</h2>
         <div className="flex space-x-2">
           <div className="relative">
             <Input
               type="text"
               placeholder="Search notes..."
-              className="pl-10"
+              className="pl-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm"
               value={searchQuery}
               onChange={handleSearchChange}
             />
@@ -50,14 +50,14 @@ export const SavedNotesSection: React.FC<SavedNotesSectionProps> = ({ onShare })
 
       {/* Empty State */}
       {filteredNotes.length === 0 && (
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 text-center">
+        <div className="card rounded-lg shadow-md p-8 text-center">
           <div className="flex flex-col items-center">
-            <div className="bg-gray-100 dark:bg-gray-700 rounded-full p-4 mb-4">
-              <FileText className="h-8 w-8 text-gray-400 dark:text-gray-500" />
+            <div className="bg-gray-100/80 dark:bg-gray-700/80 rounded-full p-4 mb-4 backdrop-blur-sm">
+              <FileText className="h-8 w-8 text-blue-500 dark:text-blue-400" />
             </div>
             <h3 className="text-lg font-medium text-gray-900 dark:text-gray-100 mb-1">No notes yet</h3>
             <p className="text-gray-600 dark:text-gray-400 mb-4">Your saved notes will appear here</p>
-            <Button onClick={scrollToRecording}>
+            <Button onClick={scrollToRecording} className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700">
               <Plus className="mr-2 h-4 w-4" />
               Create your first note
             </Button>

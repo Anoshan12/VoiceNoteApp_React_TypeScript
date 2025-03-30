@@ -151,11 +151,11 @@ export const RecordingSection: React.FC<RecordingSectionProps> = ({ onShare }) =
   };
 
   return (
-    <Card className="mb-8 shadow-md">
+    <Card className="mb-8 shadow-md card">
       <CardContent className="p-6">
         <div className="flex flex-col items-center">
           <div className="mb-6 text-center">
-            <h2 className="text-2xl font-semibold mb-2">Record Your Note</h2>
+            <h2 className="text-2xl font-semibold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Record Your Note</h2>
             <p className="text-gray-600 dark:text-gray-400">
               Press the button below to start recording your voice note
             </p>
