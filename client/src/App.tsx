@@ -3,6 +3,8 @@ import { Toaster } from "@/components/ui/toaster";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 import { Notification } from "./components/notification";
+import { SimpleThemeProvider } from "./context/simple-theme-context";
+import { SimpleNotesProvider } from "./context/simple-notes-context";
 
 function Router() {
   return (
@@ -15,11 +17,13 @@ function Router() {
 
 function App() {
   return (
-    <>
-      <Router />
-      <Toaster />
-      <Notification />
-    </>
+    <SimpleThemeProvider>
+      <SimpleNotesProvider>
+        <Router />
+        <Toaster />
+        <Notification />
+      </SimpleNotesProvider>
+    </SimpleThemeProvider>
   );
 }
 

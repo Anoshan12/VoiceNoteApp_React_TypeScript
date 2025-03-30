@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { useToast } from '@/hooks/use-toast';
 import { useSpeechRecognition } from '@/hooks/use-speech-recognition';
-import { useNotes } from '@/context/notes-context';
+import { useNotes } from '@/context/simple-notes-context';
 
 interface RecordingSectionProps {
   onShare: (content: string) => void;

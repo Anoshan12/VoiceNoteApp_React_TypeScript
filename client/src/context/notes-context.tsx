@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { queryClient, apiRequest } from '@/lib/queryClient';
 import { Note } from '@shared/schema';
@@ -28,6 +28,8 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   // Fetch all notes
   const { data: notes = [], isLoading, error } = useQuery<Note[]>({
     queryKey: ['/api/notes'],
+    refetchOnWindowFocus: false,
+    staleTime: 30000, // 30 seconds
   });
 
   // Add note mutation
@@ -100,8 +102,12 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
 
   // Filter and sort notes when notes, searchQuery, or sortOrder changes
   useEffect(() => {
-    if (!notes) return;
+    if (!notes || notes.length === 0) {
+      setFilteredNotes([]);
+      return;
+    }
 
+    // Make a shallow copy to avoid modifying the original array
     let filtered = [...notes];
 
     // Filter by search query
@@ -125,29 +131,29 @@ export const NotesProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   }, [notes, searchQuery, sortOrder]);
 
   // Add a new note
-  const addNote = async (title: string, content: string) => {
+  const addNote = useCallback(async (title: string, content: string) => {
     await addNoteMutation.mutateAsync({ title, content });
-  };
+  }, [addNoteMutation]);
 
   // Update an existing note
-  const updateNote = async (id: number, title: string, content: string) => {
+  const updateNote = useCallback(async (id: number, title: string, content: string) => {
     await updateNoteMutation.mutateAsync({ id, data: { title, content } });
-  };
+  }, [updateNoteMutation]);
 
   // Delete a note
-  const deleteNote = async (id: number) => {
+  const deleteNote = useCallback(async (id: number) => {
     await deleteNoteMutation.mutateAsync(id);
-  };
+  }, [deleteNoteMutation]);
 
   // Search notes
-  const searchNotes = (query: string) => {
+  const searchNotes = useCallback((query: string) => {
     setSearchQuery(query);
-  };
+  }, []);
 
   // Toggle sort order
-  const toggleSortOrder = () => {
+  const toggleSortOrder = useCallback(() => {
     setSortOrder(prev => (prev === 'desc' ? 'asc' : 'desc'));
-  };
+  }, []);
 
   return (
     <NotesContext.Provider value={{

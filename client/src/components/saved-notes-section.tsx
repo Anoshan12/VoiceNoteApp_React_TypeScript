@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { NoteCard } from '@/components/note-card';
-import { useNotes } from '@/context/notes-context';
-import { ArrowUpDown, FileText, Plus, Search } from 'lucide-react';
+import { useNotes } from '@/context/simple-notes-context';
+import { FileText, Plus, Search } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface SavedNotesSectionProps {
@@ -10,16 +10,17 @@ interface SavedNotesSectionProps {
 }
 
 export const SavedNotesSection: React.FC<SavedNotesSectionProps> = ({ onShare }) => {
-  const { 
-    filteredNotes, 
-    isLoading, 
-    searchNotes, 
-    sortOrder, 
-    toggleSortOrder 
-  } = useNotes();
+  const { notes } = useNotes();
+  const [searchQuery, setSearchQuery] = useState('');
   
+  // Simple filtering function
+  const filteredNotes = notes.filter(note => 
+    note.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+    note.content.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    searchNotes(e.target.value);
+    setSearchQuery(e.target.value);
   };
 
   const scrollToRecording = () => {
@@ -39,23 +40,16 @@ export const SavedNotesSection: React.FC<SavedNotesSectionProps> = ({ onShare })
               type="text"
               placeholder="Search notes..."
               className="pl-10"
+              value={searchQuery}
               onChange={handleSearchChange}
             />
             <Search className="absolute left-3 top-2.5 h-4 w-4 text-gray-400" />
           </div>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={toggleSortOrder}
-            title={sortOrder === 'desc' ? 'Newest first' : 'Oldest first'}
-          >
-            <ArrowUpDown className="h-4 w-4" />
-          </Button>
         </div>
       </div>
 
       {/* Empty State */}
-      {filteredNotes.length === 0 && !isLoading && (
+      {filteredNotes.length === 0 && (
         <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-8 text-center">
           <div className="flex flex-col items-center">
             <div className="bg-gray-100 dark:bg-gray-700 rounded-full p-4 mb-4">
@@ -68,14 +62,6 @@ export const SavedNotesSection: React.FC<SavedNotesSectionProps> = ({ onShare })
               Create your first note
             </Button>
           </div>
-        </div>
-      )}
-
-      {/* Loading State */}
-      {isLoading && (
-        <div className="text-center py-8">
-          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          <p className="mt-2 text-gray-600 dark:text-gray-400">Loading notes...</p>
         </div>
       )}
 
